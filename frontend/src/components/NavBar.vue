@@ -49,14 +49,13 @@ export default {
     },
     cartItems: {
       type: Number,
-      default: 3
     }
   },
   methods: {
     currentPage: function (){
         console.log("clicked")
         let element =  document.getElementById(this.page);
-        let elementClass =element.class;
+        let elementClass = element.class;
         document.getElementById(this.page).class = elementClass + " disabled"
 
     }

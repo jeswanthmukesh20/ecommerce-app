@@ -83,7 +83,7 @@ export default {
   data() {
     return {
       products: [],
-      cartItem: 0
+      // cartItem: 0
     }
   },
   mounted() {
@@ -104,6 +104,11 @@ export default {
     addCart(){
       this.$store.state.commit("increment")
       this.cartItem = this.$store.state.cartItem;
+    },
+  },
+  computed: {
+    cartItem() {
+      return this.$store.state.cartItem;
     }
   }
 }
