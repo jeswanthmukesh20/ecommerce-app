@@ -30,7 +30,7 @@
 
     <a class="btn nav-item">
     <img data-toggle="tooltip" onclick="alert('Hello wrold')" data-placement="bottom" title="your cart" src="../assets/img/cart.png" height="42px" width="42px" alt="" >
-      <span style=" top: -15px; left: -10px" class="badge sticky-top text-lg badge-danger">{{ cartItems }}</span>
+      <span style=" top: -15px; left: -10px" class="badge sticky-top text-lg badge-danger">{{ ($store.state.cartItem < 10) ? $store.state.cartItem : '10+' }}</span>
 
       </a>
     <img data-toggle="tooltip" onclick="alert('Hello wrold')" data-placement="bottom" title="your profile" src="../assets/img/user.png" height="62px" width="72px" alt="" class="rounded-circle nav-item btn">
@@ -47,9 +47,6 @@ export default {
     page: {
       type: String
     },
-    cartItems: {
-      type: Number,
-    }
   },
   methods: {
     currentPage: function (){

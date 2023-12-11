@@ -29,15 +29,21 @@ export default {
     },
     price: {
       type: Number
+    },
+    product_id: {
+      type: String
     }
   },
   methods: {
     alert: function (message){
       alert(message);
     },
+
     addCart(){
-      console.log(this.$store.state.cartItem)
-      this.$store.commit("increment");
+      this.$store.commit("addCart", {
+        "product_id": this.product_id,
+        "price": this.price,
+      });
     }
   }
 }
