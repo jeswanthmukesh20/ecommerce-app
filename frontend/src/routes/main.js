@@ -6,6 +6,7 @@ import LoginView from "@/pages/LoginView.vue";
 import store from '../store/main'
 import UnAuthorized from "@/pages/Unauthorized.vue";
 import RegisterView from "@/pages/RegisterView.vue";
+import Checkout from "@/pages/Checkout.vue";
 
 
 const routes = [
@@ -42,6 +43,15 @@ const routes = [
         path: "/register",
         name: "Register",
         component: RegisterView
+    },
+    {
+        path: "/checkout",
+        name: "Checkout",
+        component: Checkout,
+        meta: {
+            requiresAuth: true,
+            requiresUser: true
+        }
     }
 
 ]

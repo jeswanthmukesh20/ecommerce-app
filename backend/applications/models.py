@@ -40,6 +40,7 @@ class Orders(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     order_id = db.Column(db.String())
     user_id = db.Column(db.String(), db.ForeignKey(Users.id, ondelete='CASCADE'))
+    product_name = db.Column(db.String())
     quantity = db.Column(db.Integer)
     time = db.Column(db.DateTime, default=datetime.utcnow)
 

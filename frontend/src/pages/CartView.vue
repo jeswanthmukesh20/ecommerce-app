@@ -24,10 +24,10 @@
           <h5 class="card-title">Total Bill</h5>
           <ul class="list-group list-group-flush">
             <li class="list-group-item">Subtotal: ₹{{ total.sub_total }}</li>
-            <li class="list-group-item">CGST (8%) + SGST (8%): ₹{{ total.tax.toFixed(2) }}</li>
+            <li class="list-group-item">CGST (9%) + SGST (9%): ₹{{ total.tax.toFixed(2) }}</li>
             <li class="list-group-item"><strong>Total: ₹{{ total.total.toFixed(2) }}</strong></li>
           </ul>
-          <button class="btn btn-success btn-block mt-3">Checkout</button>
+          <button @click="checkout" class="btn btn-success btn-block mt-3">Checkout</button>
         </div>
       </div>
     </div>
@@ -43,6 +43,12 @@ export default {
   components:{
     CartCard
   },
+  methods: {
+    checkout: function() {
+      this.$store.dispatch("emptyCart");
+      this.$router.push('/checkout')
+    }
+  },
   computed: {
     products(){
       return this.$store.state.cart
@@ -52,7 +58,7 @@ export default {
       this.$store.state.cart.forEach(product => {
         sub_total += (product.quantity * product.price);
       })
-      let total = sub_total + (sub_total * 0.16);
+      let total = sub_total + (sub_total * 0.18);
       return {
         total: total,
         tax: total - sub_total,

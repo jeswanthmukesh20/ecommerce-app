@@ -1,35 +1,35 @@
 <template>
   <div id="products" class="container space-around p-5">
-    <nav class="navbar-light">
-      <ul class="nav  justify-content-center mr-auto ml-auto ">
-        <li class="nav-item">
-          <a class="nav-link" href="#">Popularity</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Newest First</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Recommended</a>
-        </li>
-        <li class="nav-item dropdown">
-          <div class="dropdown show">
-            <a class="btn dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <img src="../assets/img/sort.png" height="24px" width="24px" alt="no sort"> Sort By
-            </a>
+<!--    <nav class="navbar-light">-->
+<!--      <ul class="nav  justify-content-center mr-auto ml-auto ">-->
+<!--        <li class="nav-item">-->
+<!--          <a class="nav-link" href="#">Popularity</a>-->
+<!--        </li>-->
+<!--        <li class="nav-item">-->
+<!--          <a class="nav-link" href="#">Newest First</a>-->
+<!--        </li>-->
+<!--        <li class="nav-item">-->
+<!--          <a class="nav-link" href="#">Recommended</a>-->
+<!--        </li>-->
+<!--        <li class="nav-item dropdown">-->
+<!--          <div class="dropdown show">-->
+<!--            <a class="btn dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
+<!--              <img src="../assets/img/sort.png" height="24px" width="24px" alt="no sort"> Sort By-->
+<!--            </a>-->
 
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-              <a class="dropdown-item" href="#">High to Low Price</a>
-              <a class="dropdown-item" href="#">Low to High Price</a>
-              <a class="dropdown-item" href="#">High to Low Rating</a>
-              <a class="dropdown-item" href="#">Low to High Rating</a>
-            </div>
-          </div>
-        </li>
-      </ul>
-    </nav>
-    <hr style="width: 50%; border-radius: 6px; border-style: solid;">
+<!--            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">-->
+<!--              <a class="dropdown-item" href="#">High to Low Price</a>-->
+<!--              <a class="dropdown-item" href="#">Low to High Price</a>-->
+<!--              <a class="dropdown-item" href="#">High to Low Rating</a>-->
+<!--              <a class="dropdown-item" href="#">Low to High Rating</a>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </li>-->
+<!--      </ul>-->
+<!--    </nav>-->
+<!--    <hr style="width: 50%; border-radius: 6px; border-style: solid;">-->
     <div  class="row justify-content-center ml-3 mb-3">
-      <ProductCard v-for="product in products" :key="product.product_id" :category="product.category" :price="product.price" :title="product.product_name" :imageURL="product.main_image" :product_id="product.product_id"/>
+      <ProductCard v-for="product in getProducts" :key="product.product_id" :category="product.category" :price="product.price" :title="product.product_name" :imageURL="product.main_image" :product_id="product.product_id"/>
     </div>
   </div>
 
@@ -50,6 +50,7 @@ export default {
   },
   mounted() {
     // Fetch product data using Axios when the component is mounted
+    this.$store.commit("setCategory", "All");
     this.fetchProducts();
     this.cartItem = this.$store.state.cartItem;
     console.log(this.cartItem, "cartItem")
@@ -64,10 +65,26 @@ export default {
         console.log(err)
       })
     },
+    changeCategory(category){
+      this.category = category;
+    }
   },
   computed: {
     cartItem() {
       return this.$store.state.cartItem;
+    },
+    getProducts(){
+      let products = [];
+      this.products.forEach(product => {
+        if(this.$store.state.category !== "All"){
+          if(product.category === this.$store.state.category){
+            products.push(product)
+          }
+        }else{
+          products.push(product);
+        }
+      })
+      return products;
     }
   }
 }

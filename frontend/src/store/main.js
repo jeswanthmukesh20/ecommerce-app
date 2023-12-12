@@ -6,6 +6,7 @@ export default new createStore({
         return {
             cartItem: 0,
             cart: [],
+            category: "All",
             user: {
                 username: "",
                 user_id: "",
@@ -38,11 +39,21 @@ export default new createStore({
         },
         SET_USER(state, user) {
             state.user = user;
+        },
+        emptyCart(state){
+            state.cart = []
+            state.cartItem = 0
+        },
+        setCategory(state, category){
+            state.category = category;
         }
     },
     actions: {
         setUser({ commit }, user) {
             commit('SET_USER', user);
+        },
+        emptyCart({ commit }) {
+            commit("emptyCart");
         }
     },
     modules: {

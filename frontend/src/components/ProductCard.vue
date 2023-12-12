@@ -6,10 +6,11 @@
         <h5 @click="alert(`Clicked ${title}`)" data-toggle="tooltip" data-placement="bottom" :title="title" class="card-title">{{ title.slice(0, 20) + "..." }}</h5>
         <p>₹{{ price }}</p>
         <p @click="alert(`Clicked ${title}`)" class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-        <a @click="addCart" class="btn">
-          <img src="../assets/img/add.png" height="42px" width="42px" alt="">
+        <a @click="addCart" class="btn btn-success">
+          <img src="../assets/img/add.png" height="18px" width="18px" alt="">
+          Add to Cart
         </a>
-        <a href="#" class="btn btn-success">Buy Now</a>
+<!--        <a href="#" class="btn btn-success">Add to Cart</a>-->
       </div>
     </div>
   </div>
@@ -62,4 +63,9 @@ export default {
 .card:hover {
   box-shadow: 10px 5px 35px  rgba(104,104,104,0.33);
 }
+.btn-success{
+  font-weight: bold;
+  align-content: center;
+}
+
 </style>

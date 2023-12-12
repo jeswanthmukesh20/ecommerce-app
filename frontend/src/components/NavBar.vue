@@ -15,9 +15,10 @@
           Categories
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="#">Grocery</a>
-          <a class="dropdown-item" href="#">Vegetables</a>
-          <a class="dropdown-item" href="#">Snacks</a>
+          <a @click="$store.commit('setCategory', 'All')" class="dropdown-item" href="#">All</a>
+          <a @click="$store.commit('setCategory', 'Grocery')" class="dropdown-item" href="#">Grocery</a>
+          <a @click="$store.commit('setCategory', 'Vegetables')" class="dropdown-item" href="#">Vegetables</a>
+          <a @click="$store.commit('setCategory', 'Snacks')" class="dropdown-item" href="#">Snacks</a>
         </div>
       </li>
       <li class="nav-item ml-3">
@@ -28,9 +29,9 @@
       </li>
     </ul>
 
-    <a class="btn nav-item" href="/cart">
+    <a class="btn nav-item ml-3" href="/cart">
     <img data-toggle="tooltip"  data-placement="bottom" title="your cart" src="../assets/img/cart.png" height="42px" width="42px" alt="" >
-      <span style=" top: -15px; left: -10px" class="badge sticky-top text-lg badge-danger">{{ ($store.state.cartItem < 11) ? $store.state.cartItem : '10+' }}</span>
+      <span v-if="itemCount" style=" top: -15px; left: -10px" class="badge sticky-top text-lg badge-danger">{{ ($store.state.cartItem < 11) ? $store.state.cartItem : '10+' }}</span>
 
       </a>
     <div v-if="userLoggedIn"  class="dropdown ">
@@ -83,6 +84,9 @@ export default {
     },
     userLoggedIn(){
       return this.$store.state.user.access_token !== ""
+    },
+    itemCount(){
+      return this.$store.state.cartItem > 0
     }
   }
 
