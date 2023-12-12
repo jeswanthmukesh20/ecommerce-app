@@ -8,7 +8,7 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav justify-content-center ml-auto mr-auto">
       <li class="nav-item active">
-        <a @click="currentPage()" class="nav-link" id="home" href="#">Home </a>
+        <a class="nav-link" id="home" href="#">Home </a>
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -20,7 +20,7 @@
           <a class="dropdown-item" href="#">Snacks</a>
         </div>
       </li>
-      <li class="nav-item">
+      <li class="nav-item ml-3">
         <form  class="form-inline my-2 mr-5 my-lg-0">
           <input style="width: 500px" class="form-control mr-sm-2" type="search"  placeholder="Search for products and more.." aria-label="Search">
           <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
@@ -30,7 +30,7 @@
 
     <a class="btn nav-item">
     <img data-toggle="tooltip" onclick="alert('Hello wrold')" data-placement="bottom" title="your cart" src="../assets/img/cart.png" height="42px" width="42px" alt="" >
-      <span style=" top: -15px; left: -10px" class="badge sticky-top text-lg badge-danger">{{ ($store.state.cartItem < 10) ? $store.state.cartItem : '10+' }}</span>
+      <span style=" top: -15px; left: -10px" class="badge sticky-top text-lg badge-danger">{{ ($store.state.cartItem < 11) ? $store.state.cartItem : '10+' }}</span>
 
       </a>
     <img data-toggle="tooltip" onclick="alert('Hello wrold')" data-placement="bottom" title="your profile" src="../assets/img/user.png" height="62px" width="72px" alt="" class="rounded-circle nav-item btn">
@@ -49,13 +49,6 @@ export default {
     },
   },
   methods: {
-    currentPage: function (){
-        console.log("clicked")
-        let element =  document.getElementById(this.page);
-        let elementClass = element.class;
-        document.getElementById(this.page).class = elementClass + " disabled"
-
-    }
   }
 
 }

@@ -7,12 +7,6 @@ from .models import Users, Product
 
 class ShowProducts(Resource):
     def get(self):
-        # current_user = get_jwt_identity()
-        # token = request.headers.get('Authorization').split()[1]
-        # decoded_token = decode_token(token)
-        # if decoded_token:
-        #     user = Users.query.filter_by(public_id=current_user).first()
-        #     if user.role == "user":
         products = Product.query.all()
         products = [
             {
