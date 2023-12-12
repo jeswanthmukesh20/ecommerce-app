@@ -32,6 +32,9 @@ export default {
     },
     product_id: {
       type: String
+    },
+    category: {
+      type: String
     }
   },
   methods: {
@@ -41,8 +44,11 @@ export default {
 
     addCart(){
       this.$store.commit("addCart", {
-        "product_id": this.product_id,
-        "price": this.price,
+        product_id: this.product_id,
+        price: this.price,
+        imageURL: this.imageURL,
+        product_name: this.title,
+        category: this.category
       });
     }
   }

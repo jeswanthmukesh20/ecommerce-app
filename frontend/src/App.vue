@@ -1,13 +1,13 @@
 <template>
   <NabBar page="link" />
-  <HomeView/>
+  <router-view/>
   <FooterComponent/>
 </template>
 
 <script>
 import NabBar from "@/components/NavBar.vue";
 import FooterComponent from "@/components/Footer.vue";
-import HomeView from "@/pages/HomeView.vue";
+// import HomeView from "@/pages/HomeView.vue";
 
 import axios from "axios";
 export default {
@@ -15,7 +15,7 @@ export default {
   components: {
     NabBar,
     FooterComponent,
-    HomeView
+    // HomeView
 
   },
   data() {
@@ -30,6 +30,7 @@ export default {
     this.cartItem = this.$store.state.cartItem;
     console.log(this.cartItem, "cartItem")
     console.log(this.$store.state.cart, "cart")
+    console.log(this.$store.state.user)
   },
   methods: {
     fetchProducts(){

@@ -8,7 +8,7 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav justify-content-center ml-auto mr-auto">
       <li class="nav-item active">
-        <a class="nav-link" id="home" href="#">Home </a>
+        <a class="nav-link" id="home" href="/">Home </a>
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -28,19 +28,31 @@
       </li>
     </ul>
 
-    <a class="btn nav-item">
-    <img data-toggle="tooltip" onclick="alert('Hello wrold')" data-placement="bottom" title="your cart" src="../assets/img/cart.png" height="42px" width="42px" alt="" >
+    <a class="btn nav-item" href="/cart">
+    <img data-toggle="tooltip"  data-placement="bottom" title="your cart" src="../assets/img/cart.png" height="42px" width="42px" alt="" >
       <span style=" top: -15px; left: -10px" class="badge sticky-top text-lg badge-danger">{{ ($store.state.cartItem < 11) ? $store.state.cartItem : '10+' }}</span>
 
       </a>
-    <img data-toggle="tooltip" onclick="alert('Hello wrold')" data-placement="bottom" title="your profile" src="../assets/img/user.png" height="62px" width="72px" alt="" class="rounded-circle nav-item btn">
+    <div v-if="userLoggedIn"  class="dropdown ">
+      <a  class="dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        {{userData.username}}
+        <img data-toggle="tooltip" data-placement="bottom" title="your profile" src="../assets/img/user.png" height="62px" width="72px" alt="" class="rounded-circle nav-item btn">
+
+      </a>
+
+      <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <a class="dropdown-item btn" href="/profile">Profile</a>
+        <a class="dropdown-item btn btn-danger" @click="logout">Logout</a>
+      </div>
+
+    </div>
+    <div @click="this.$router.push('/login')" v-else class="btn btn-primary">Login</div>
   </div>
 </nav>
 </template>
 
 <script>
-// import Logo from "../assets/Logo.png"
-// document.getElementById("logo").src = Logo.src
+
 export default {
   name: 'NabBar',
   props: {
@@ -49,15 +61,36 @@ export default {
     },
   },
   methods: {
+    logout(){
+      this.$store.dispatch("setUser", {
+        username: "",
+        user_id: "",
+        role: "",
+        access_token: ""
+      })
+      this.$router.push("/login")
+    }
+  },
+  data(){
+    return {
+      loggenIn: (this.$store.state.user.access_token !== ""),
+      user: this.$store.state.user,
+    }
+  },
+  computed:{
+    userData(){
+      return this.$store.state.user
+    },
+    userLoggedIn(){
+      return this.$store.state.user.access_token !== ""
+    }
   }
 
 }
 
 </script>
-
-<!--<style>-->
-<!--//.nav-item {-->
-<!--//  margin-left: 2rem;-->
-<!--//  margin-right: 2rem;-->
-<!--//}-->
-<!--</style>-->
+<style scoped>
+.dropdown-toggle{
+  color: black;
+}
+</style>

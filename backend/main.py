@@ -34,17 +34,23 @@ roles = {
 @app.route("/login", methods=["POST"])
 def login():
     data = request.get_json()
+    print(data)
     username = data.get("username", None)
     password = data.get("password", None)
-    email = data.get("email", None)
-    user = Users.query.filter_by(email=email).first()
+    if "@" in username:
+        user = Users.query.filter_by(email=username).first()
+    else:
+        user = Users.query.filter_by(name=username).first()
     if user and check_password_hash(user.password, password):
         user.lastseen = time.time()
         db.session.commit()
         access_token = create_access_token(identity=user.public_id, additional_claims={'role': user.role})
-        return jsonify({'access_token': access_token,
-                        'username': user.name,
-                        'role': user.role}), 200
+        return jsonify({
+            'access_token': access_token,
+            'username': user.name,
+            'role': user.role,
+            'user_id': user.public_id
+        }), 200
 
     return jsonify({'error': 'Invalid credentials'}), 403
 

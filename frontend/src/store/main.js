@@ -9,8 +9,8 @@ export default new createStore({
             user: {
                 username: "",
                 user_id: "",
-                is_admin: false,
-                token: ""
+                role: "",
+                access_token: ""
             }
         }
     },
