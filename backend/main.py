@@ -7,6 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from applications import db
 from applications.models import Users
 from applications.show_products_api import ShowProducts
+from applications.user_api import UserAPI
 from applications import ManageProduct
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token
@@ -87,6 +88,7 @@ def signup(user_type):
 
 api.add_resource(ShowProducts, "/shop")
 api.add_resource(ManageProduct, "/manage_product")
+api.add_resource(UserAPI, "/user_actions")
 
 
 if __name__ == "__main__":

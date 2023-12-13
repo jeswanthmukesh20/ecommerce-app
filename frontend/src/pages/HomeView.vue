@@ -29,7 +29,15 @@
 <!--    </nav>-->
 <!--    <hr style="width: 50%; border-radius: 6px; border-style: solid;">-->
     <div  class="row justify-content-center ml-3 mb-3">
-      <ProductCard v-for="product in getProducts" :key="product.product_id" :category="product.category" :price="product.price" :title="product.product_name" :imageURL="product.main_image" :product_id="product.product_id"/>
+      <ProductCard
+          v-for="product in getProducts"
+          :key="product.product_id"
+          :category="product.category"
+          :price="product.price"
+          :title="product.product_name"
+          :imageURL="product.main_image"
+          :product_id="product.product_id"
+          :quantity="product.quantity"/>
     </div>
   </div>
 

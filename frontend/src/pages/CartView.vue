@@ -38,13 +38,46 @@
 
 <script>
 import CartCard from "@/components/CartCard.vue";
+import axios from "axios";
 export default {
   name: "CartView",
   components:{
     CartCard
   },
+  mounted(){
+    axios.post("http://localhost:8000/user_actions", {}, {
+      headers: {
+        Authorization: `Bearer ${this.$store.state.user.access_token}`
+      }
+    }).then(resp => {
+      console.log(resp)
+    }).catch(err => {
+      this.$store.dispatch("setUser", {
+        username: "",
+        user_id: "",
+        role: "",
+        access_token: ""
+      })
+      this.$router.push({path: "/login", next: "/cart"})
+      console.log(err)
+    })
+  },
   methods: {
     checkout: function() {
+
+      let config = {
+        headers: {
+          Authorization: `Bearer ${this.$store.state.user.access_token}`
+        }
+      }
+      console.log(config)
+      axios.post("http://localhost:8000/user_actions", {
+        orders: this.$store.state.cart
+      }, config).then(resp => {
+        console.log(resp)
+      }).catch(err => {
+        console.log(err.response.status)
+      })
       this.$store.dispatch("emptyCart");
       this.$router.push('/checkout')
     }
