@@ -29,7 +29,7 @@
       </li>
     </ul>
 
-    <a class="btn nav-item ml-3" href="/cart">
+    <a v-if="userAnonymous" class="btn nav-item ml-3" href="/cart">
     <img data-toggle="tooltip"  data-placement="bottom" title="your cart" src="../assets/img/cart.png" height="42px" width="42px" alt="" >
       <span v-if="itemCount" style=" top: -15px; left: -10px" class="badge sticky-top text-lg badge-danger">{{ ($store.state.cartItem < 11) ? $store.state.cartItem : '10+' }}</span>
 
@@ -87,6 +87,9 @@ export default {
     },
     itemCount(){
       return this.$store.state.cartItem > 0
+    },
+    userAnonymous(){
+      return this.$store.state.user === "user" || this.$store.state.user === "user"
     }
   }
 

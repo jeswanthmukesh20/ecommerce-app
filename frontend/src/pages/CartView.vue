@@ -45,7 +45,7 @@ export default {
     CartCard
   },
   mounted(){
-    axios.post("http://localhost:8000/user_actions", {}, {
+    axios.get("http://localhost:8000/user_actions", {
       headers: {
         Authorization: `Bearer ${this.$store.state.user.access_token}`
       }

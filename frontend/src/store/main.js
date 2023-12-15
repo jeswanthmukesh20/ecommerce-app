@@ -11,8 +11,10 @@ export default new createStore({
                 username: "",
                 user_id: "",
                 role: "",
-                access_token: ""
-            }
+                access_token: "",
+                email: ""
+            },
+            products: []
         }
     },
     getters: {
@@ -46,6 +48,9 @@ export default new createStore({
         },
         setCategory(state, category){
             state.category = category;
+        },
+        setProducts(state, products){
+            state.products = products;
         }
     },
     actions: {
@@ -54,6 +59,9 @@ export default new createStore({
         },
         emptyCart({ commit }) {
             commit("emptyCart");
+        },
+        SET_Products({ commit }, products){
+            commit("setProducts", products)
         }
     },
     modules: {

@@ -6,7 +6,8 @@ import LoginView from "@/pages/LoginView.vue";
 import store from '../store/main'
 import UnAuthorized from "@/pages/Unauthorized.vue";
 import RegisterView from "@/pages/RegisterView.vue";
-import Checkout from "@/pages/Checkout.vue";
+import CheckoutView from "@/pages/Checkout.vue";
+import UserProfile from "@/pages/UserProfile.vue";
 
 
 const routes = [
@@ -47,7 +48,16 @@ const routes = [
     {
         path: "/checkout",
         name: "Checkout",
-        component: Checkout,
+        component: CheckoutView,
+        meta: {
+            requiresAuth: true,
+            requiresUser: true
+        }
+    },
+    {
+        path: "/profile",
+        name: "Profile",
+        component: UserProfile,
         meta: {
             requiresAuth: true,
             requiresUser: true
@@ -66,36 +76,28 @@ router.beforeEach((to, from, next) => {
     const loggedIn = store.state.user.access_token
     const role = store.state.user.role
     if (to.matched.some(record => record.meta.requiresUser)) {
-        if(!loggedIn || role !== "user"){
-            next(loggedIn ? '/unauthorized' : '/login')
-        } else{
+        if(!loggedIn && role !== "user"){
+            next('/login')
+        }
+        else{
             next()
         }
-    }
-    if (to.matched.some(record => record.meta.requiresAdmin)) {
-        if (!loggedIn || role !== "admin") {
-
-            next(loggedIn ? '/unauthorized' : '/login');
-        } else {
-
-            next();
+    }else if(to.matched.some(record => record.meta.requiresManager)){
+        if(!loggedIn && role !== "store manager"){
+            next("/login")
+        }else{
+            next()
         }
-    } else {
-
-        next();
-    }
-    if (to.matched.some(record => record.meta.requiresManager)) {
-        if (!loggedIn || role !== "store manager") {
-
-            next(loggedIn ? '/unauthorized' : '/login');
-        } else {
-
-            next();
+    }else if(to.matched.some(record => record.meta.requiresAdmin)){
+        if(!loggedIn && role !== "admin"){
+            next("/login")
+        }else{
+            next()
         }
-    } else {
-
-        next();
+    }else{
+        next()
     }
+
 });
 
 

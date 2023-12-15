@@ -15,7 +15,7 @@ class ShowProducts(Resource):
                 "quantity": product.quantity,
                 "category": product.category,
                 "price": product.price,
-                "main_image": product.main_image,
+                "main_image": f"http://localhost:8000/images/{product.main_image}",
                 "images": product.images
             } for product in products
         ]

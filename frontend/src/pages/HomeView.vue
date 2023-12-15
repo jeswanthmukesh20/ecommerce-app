@@ -1,33 +1,5 @@
 <template>
-  <div id="products" class="container space-around p-5">
-<!--    <nav class="navbar-light">-->
-<!--      <ul class="nav  justify-content-center mr-auto ml-auto ">-->
-<!--        <li class="nav-item">-->
-<!--          <a class="nav-link" href="#">Popularity</a>-->
-<!--        </li>-->
-<!--        <li class="nav-item">-->
-<!--          <a class="nav-link" href="#">Newest First</a>-->
-<!--        </li>-->
-<!--        <li class="nav-item">-->
-<!--          <a class="nav-link" href="#">Recommended</a>-->
-<!--        </li>-->
-<!--        <li class="nav-item dropdown">-->
-<!--          <div class="dropdown show">-->
-<!--            <a class="btn dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
-<!--              <img src="../assets/img/sort.png" height="24px" width="24px" alt="no sort"> Sort By-->
-<!--            </a>-->
-
-<!--            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">-->
-<!--              <a class="dropdown-item" href="#">High to Low Price</a>-->
-<!--              <a class="dropdown-item" href="#">Low to High Price</a>-->
-<!--              <a class="dropdown-item" href="#">High to Low Rating</a>-->
-<!--              <a class="dropdown-item" href="#">Low to High Rating</a>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </li>-->
-<!--      </ul>-->
-<!--    </nav>-->
-<!--    <hr style="width: 50%; border-radius: 6px; border-style: solid;">-->
+  <div v-if="getUser" id="products" class="container space-around p-5">
     <div  class="row justify-content-center ml-3 mb-3">
       <ProductCard
           v-for="product in getProducts"
@@ -40,50 +12,90 @@
           :quantity="product.quantity"/>
     </div>
   </div>
+  <div v-else-if="getManager" id="products" class="container space-around p-5">
+    <ul class="nav">
+      <li class="nav-item">
+        <a data-toggle="modal" data-target="#exampleModal" class="nav-link btn btn-primary text-light" href="#">Add Product</a>
+      </li>
 
+    </ul>
+    <div  class="row justify-content-center ml-3 mb-3">
+      <ManagerProductCard
+          v-for="product in getProducts"
+          :key="product.product_id"
+          :category="product.category"
+          :price="product.price"
+          :title="product.product_name"
+          :imageURL="product.main_image"
+          :product_id="product.product_id"
+          :quantity="product.quantity"
+      />
+    </div>
+<ModalForm/>
+
+  </div>
 </template>
 <script>
 import ProductCard from "@/components/ProductCard.vue";
+import ManagerProductCard from "@/components/ManagerProductCard.vue";
 import axios from "axios";
+import ModalForm from "@/components/ModalForm.vue";
+
 
 export default {
   name: "HomeView",
   components: {
-    ProductCard
+    ModalForm,
+    ProductCard,
+    ManagerProductCard
   },
   data() {
     return {
       products: [],
+      paths: {
+        "user": '/shop',
+        "store manager": "/manage_product",
+        "admin": "/",
+        "": '/shop'
+      }
     }
   },
   mounted() {
-    // Fetch product data using Axios when the component is mounted
-    this.$store.commit("setCategory", "All");
     this.fetchProducts();
+    console.log(this.$store.state.products)
+    this.$store.commit("setCategory", "All");
     this.cartItem = this.$store.state.cartItem;
-    console.log(this.cartItem, "cartItem")
-    console.log(this.$store.state.cart, "cart")
   },
   methods: {
     fetchProducts(){
-      axios.get("http://localhost:8000/shop").then(res => {
+      axios.get(`http://localhost:8000${this.paths[this.getRole]}`,{
+        headers: {
+          Authorization: `Bearer ${this.$store.state.user.access_token}`
+        }
+      }).then(res => {
         console.log(res)
-        this.products = res.data;
+        this.$store.dispatch("SET_Products", res.data);
       }).catch(err => {
         console.log(err)
+        this.$store.dispatch("setUser", {
+          username: "",
+          user_id: "",
+          role: "",
+          access_token: "",
+          email: ""
+        })
+        this.$router.push("/login")
       })
     },
-    changeCategory(category){
-      this.category = category;
-    }
   },
   computed: {
     cartItem() {
       return this.$store.state.cartItem;
     },
     getProducts(){
+
       let products = [];
-      this.products.forEach(product => {
+      this.$store.state.products.forEach(product => {
         if(this.$store.state.category !== "All"){
           if(product.category === this.$store.state.category){
             products.push(product)
@@ -93,6 +105,15 @@ export default {
         }
       })
       return products;
+    },
+    getUser(){
+      return this.$store.state.user.role === "user" || this.$store.state.user.role === "";
+    },
+    getManager(){
+      return this.$store.state.user.role === "store manager"
+    },
+    getRole(){
+      return this.$store.state.user.role;
     }
   }
 }
@@ -123,5 +144,9 @@ export default {
   height: 200px;
   background-color: #e9ecef;
 }
-
+#addProduct {
+  height: 300px;
+  width: 300px;
+  background-color: white;
+}
 </style>

@@ -8,21 +8,20 @@
         <p class="quantity" v-if="getQuantity">Only {{ quantity}} stocks left!</p>
         <p class="quantity" v-if="outOfStock">out of stock!</p>
         <p @click="alert(`Clicked ${title}`)" class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-        <a v-if="!outOfStock" @click="addCart" class="btn btn-success">
-          <img src="../assets/img/add.png" height="18px" width="18px" alt="">
-          Add to Cart
+        <a class="btn btn-success">
+          Edit
         </a>
-        <a v-else  class="btn btn-success disabled">
-          <img src="../assets/img/add.png" height="18px" width="18px" alt="">
-          Add to Cart
+        <a @click="deleteProduct" class="btn btn-success btn-danger">
+          Delete
         </a>
-<!--        <a href="#" class="btn btn-success">Add to Cart</a>-->
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "ProductCard",
   props: {
@@ -51,25 +50,39 @@ export default {
     alert: function (message){
       alert(message);
     },
-
-    addCart(){
-      let limitExceeded = false;
-      this.$store.state.cart.forEach(product => {
-        if((product.quantity + 1) > this.quantity && product.product_id === this.product_id){
-          limitExceeded = true;
+    fetchProducts(){
+      axios.get("http://localhost:8000/manage_product",{
+        headers: {
+          Authorization: `Bearer ${this.$store.state.user.access_token}`
         }
+      }).then(res => {
+        console.log(res)
+        this.$store.dispatch("SET_Products", res.data);
+      }).catch(err => {
+        console.log(err)
+        this.$store.dispatch("setUser", {
+          username: "",
+          user_id: "",
+          role: "",
+          access_token: "",
+          email: ""
+        })
+        this.$router.push("/login")
       })
-      if(!limitExceeded){
-        this.$store.commit("addCart", {
-          product_id: this.product_id,
-          price: this.price,
-          imageURL: this.imageURL,
-          product_name: this.title,
-          category: this.category
-        });
-      }else{
-        alert("Maximum buy limit for this product is reached")
-      }
+    },
+    deleteProduct: function(){
+      axios.post("http://localhost:8000/delete_product",{
+        product_id: this.product_id
+      },{
+        headers: {
+          Authorization: `Bearer ${this.$store.state.user.access_token}`
+        }
+      }).then(resp => {
+        console.log(resp)
+        this.fetchProducts();
+      }).catch(err => {
+        console.log(err)
+      })
     }
   },
   computed: {
@@ -97,5 +110,8 @@ export default {
 .quantity {
   color: orangered;
   font-weight: bold;
+}
+.btn {
+  margin: 1vh;
 }
 </style>

@@ -38,6 +38,7 @@ export default {
         password: this.password
       }).then(resp => {
         console.log(resp)
+        console.log(resp)
         this.$store.dispatch("setUser", resp.data);
         this.$router.push("/")
       }).catch(err => {
