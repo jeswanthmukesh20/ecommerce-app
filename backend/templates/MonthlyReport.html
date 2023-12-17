@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Monthly Order Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .content {
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Monthly Order Report</h1>
+        </div>
+        <div class="content">
+            <p>Dear {{ username }},</p>
+            <p>Your monthly order report for {{ month }} {{ year }}:</p>
+            <p>Total Amount Spent: ${{ total_spent }}</p>
+            <p>Thank you for choosing KiranaKart!</p>
+        </div>
+        <div class="footer">
+            <p>&copy; 2023 KiranaKart. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

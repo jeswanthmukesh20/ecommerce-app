@@ -15,7 +15,8 @@ export default new createStore({
                 email: ""
             },
             products: [],
-            orderId: ""
+            orderId: "",
+            categories: []
         }
     },
     getters: {
@@ -55,6 +56,9 @@ export default new createStore({
         },
         setOrder(state, orderId){
             state.orderId = orderId;
+        },
+        setCategories(state, categories){
+            state.categories = categories;
         }
     },
     actions: {
@@ -66,6 +70,9 @@ export default new createStore({
         },
         SET_Products({ commit }, products){
             commit("setProducts", products)
+        },
+        setCategories({ commit }, categories){
+          commit("setCategories", categories)
         },
         setOrder({commit}, orderId){
             commit("setOrder", orderId);

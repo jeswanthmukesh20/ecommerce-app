@@ -6,11 +6,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask import send_from_directory
 from functools import wraps
 from applications import db
-from applications.models import Users
+from applications.models import Users, Orders
 from applications.show_products_api import ShowProducts
 from applications.user_api import UserAPI
 from applications.admin_page_api import Admin, Category
-from applications import ManageProduct, DeleteProduct, BASE_DIR
+from applications import ManageProduct, DeleteProduct
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import JWTManager
@@ -173,7 +173,7 @@ def send_message():
         current_datetime = datetime.now()
         time_difference = current_datetime - timestamp
         hours_difference = time_difference.seconds // 3600
-        if hours_difference > app.config["MAIL_INTERVAL"]:
+        if hours_difference >= app.config["MAIL_INTERVAL"]:
             mail_users.append((user.name, user.email))
             mails.append(user.email)
     for username, email in mail_users:
@@ -192,13 +192,45 @@ def send_message():
         mail.send(msg)
 
 
+@celery.task
+def send_monthly_report():
+    users = Users.query.filter_by(role="user").all()
+    for user in users:
+        orders = Orders.query.filter_by(user_id=user.id).all()
+        total_amount_spent = 0
+        current_time = datetime.utcnow()
+        for order in orders:
+            order_time = order.time
+            time_difference = (current_time - order_time).days
+            if time_difference <= 30:
+                total_amount_spent += order.total_cost
+        email_content = render_template(
+            'MonthlyReport.html',
+            total_spent=total_amount_spent,
+            username=user.name,
+            year=current_time.year,
+            month=current_time.month
+        )
+        msg = Message(
+            subject='Your Monthly Order Report',
+            sender=app.config["MAIL_USERNAME"],
+            recipients=[user.email]
+        )
+        msg.html = email_content
+        mail.send(msg)
+
+
 @celery.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
-    print(sender)
     sender.add_periodic_task(
         crontab(hour=17, minute=30),
         send_message.s(),
         name='Send Mail Everyday')
+    sender.add_periodic_task(
+        crontab(hour=0, minute=0, day_of_month="1"),
+        send_monthly_report.s(),
+        name="Send Monthly Report"
+    )
 
 
 if __name__ == "__main__":

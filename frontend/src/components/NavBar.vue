@@ -19,6 +19,7 @@
           <a @click="$store.commit('setCategory', 'Grocery')" class="dropdown-item" href="#">Grocery</a>
           <a @click="$store.commit('setCategory', 'Vegetables')" class="dropdown-item" href="#">Vegetables</a>
           <a @click="$store.commit('setCategory', 'Snacks')" class="dropdown-item" href="#">Snacks</a>
+          <a v-for="category in getCategories" @click="$store.commit('setCategory', category)" :key="category" class="dropdown-item" href="#">{category}</a>
         </div>
       </li>
       <li class="nav-item ml-3">
@@ -91,6 +92,9 @@ export default {
     userAnonymous(){
 
       return this.$store.state.user.role === "user" || this.$store.state.user.role === ""
+    },
+    getCategories(){
+      return this.$store.state.categories
     }
   }
 
