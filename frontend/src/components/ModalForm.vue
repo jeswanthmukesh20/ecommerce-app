@@ -73,7 +73,8 @@ export default {
         }
       }).then(res => {
         console.log(res)
-        this.$store.dispatch("SET_Products", res.data);
+        this.$store.dispatch("SET_Products", res.data.products);
+        this.$store.dispatch("setCategories", res.data.categories);
       }).catch(err => {
         console.log(err)
         this.$store.dispatch("setUser", {
