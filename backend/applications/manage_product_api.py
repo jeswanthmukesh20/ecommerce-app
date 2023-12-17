@@ -32,8 +32,11 @@ class ManageProduct(Resource):
                     "main_image": f"http://localhost:8000/images/{urllib.parse.quote(product.main_image, safe='')}",
                     "images": product.images
                 } for product in products]
-                print(products)
-                return products
+                categories = RequestedCategory.query.filter_by(approved=True).all()
+                categories = [
+                    category.category_name for category in categories
+                ]
+                return {"products": products, "categories": categories}
             else:
                 return {"msg": "no product found"}, 404
 

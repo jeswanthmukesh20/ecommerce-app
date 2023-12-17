@@ -80,7 +80,7 @@ export default {
             Authorization: `Bearer ${this.$store.state.user.access_token}`
           }
         }).then(res => {
-          console.log(res)
+          console.log(res,"response")
           this.$store.dispatch("SET_Products", res.data.products);
           this.$store.dispatch("setCategories", res.data.categories)
         }).catch(err => {
@@ -105,6 +105,7 @@ export default {
     getProducts(){
 
       let products = [];
+      console.log(this.$store.state.products, "products")
       this.$store.state.products.forEach(product => {
         if(this.$store.state.category !== "All"){
           if(product.category === this.$store.state.category){
