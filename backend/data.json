@@ -1,0 +1,114 @@
+[
+    {
+        "product_name": "Amul Butter 200g",
+        "price": 120.0,
+        "quantity": 12,
+        "category": "Grocery",
+        "main_image": "amul.webp"
+    },
+    {
+        "product_name": "Harpic 500ml",
+        "price": 240.0,
+        "quantity": 8,
+        "category": "Cleaners",
+        "main_image": "harpic.webp"
+    },
+    {
+        "product_name": "Aachi chilli powder 150g",
+        "price": 25.0,
+        "quantity": 30,
+        "category": "Grocery",
+        "main_image": "chilli.webp"
+    },
+    {
+        "product_name": "Coconut",
+        "price": 25.0,
+        "quantity": 5,
+        "category": "Vegetable",
+        "main_image": "coco.webp"
+    },
+    {
+        "product_name": "Horlicks Classic Malt Powder Refill",
+        "price": 447.0,
+        "quantity": 32,
+        "category": "Grocery",
+        "main_image": "horlics.webp"
+    },
+    {
+        "product_name": "Tide Matic Top Load Liquid Detergent 850ml",
+        "price": 170.0,
+        "quantity": 3,
+        "category": "Cleaners",
+        "main_image": "tide.webp"
+    },
+    {
+        "product_name": "Comfort After Wash Morning Fresh Fabric Conditioner(860ml) & Surf Excel Matic Liquid Detergent Top Load Pouch(2l) Combo",
+        "price": 533.0,
+        "quantity": 14,
+        "category": "Cleaners",
+        "main_image": "comfort.webp"
+    },
+    {
+        "product_name": "Potato 1kg",
+        "price": 37.0,
+        "quantity": 32,
+        "category": "Vegetable",
+        "main_image": "potato.jpg"
+    },
+    {
+        "product_name": "Onion 1kg",
+        "price": 66.0,
+        "quantity": 20,
+        "category": "Vegetable",
+        "main_image": "onion.jpg"
+    },
+    {
+        "product_name": "Britannia 100% Whole Wheat Sandwich Bread",
+        "price": 55.0,
+        "quantity": 12,
+        "category": "Grocery",
+        "main_image": "bread.webp"
+    },
+    {
+        "product_name": "1 Kg Apples",
+        "price": 112.0,
+        "quantity": 100,
+        "category": "Fruits",
+        "main_image": "apples.jpg"
+    },
+    {
+        "product_name": "6 Eggs Pack",
+        "price": 54.0,
+        "quantity": 200,
+        "category": "Grocery",
+        "main_image": "eggs.jpg"
+    },
+    {
+        "product_name": "Saffola Edible vegetable oil 5 liters",
+        "price": 499.0,
+        "quantity": 30,
+        "category": "Grocery",
+        "main_image": "oil.jpg"
+    },
+    {
+        "product_name": "Snacks Mega Pack, 40 Pieces",
+        "price": 569.0,
+        "quantity": 12,
+        "category": "Grocery",
+        "main_image": "snacks.jpg"
+    },
+    {
+        "product_name": "Orange 1 Kg",
+        "price": 95.0,
+        "quantity": 12,
+        "category": "Fruits",
+        "main_image": "oranges.jpg"
+    },
+    {
+        "product_name": "White Rice 1 Kg",
+        "price": 55.0,
+        "quantity": 15,
+        "category": "Grocery",
+        "main_image": "rice.jpg"
+    }
+]
