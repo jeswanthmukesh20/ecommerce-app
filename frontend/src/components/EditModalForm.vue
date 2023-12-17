@@ -1,9 +1,9 @@
 <template>
-  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" :id="productKey" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Add Product</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Edit Product</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -34,16 +34,12 @@
                 <option value="Cleaners">Cleaners</option>
               </select>
             </div>
-            <div class="form-group">
-              <label for="newCategory">Or request a new category:</label>
-              <input v-model="requestedCategory" type="text" class="form-control" id="newCategory" placeholder="Enter new category">
-            </div>
+
 
           </form>
         </div>
         <div class="modal-footer">
-          <button @click="submitForm" type="submit" class="btn btn-primary">Add Product</button>
-          <button @click="submitForm" type="button" class="btn btn-info ml-2" data-toggle="modal" data-target="#requestCategoryModal">Request New Category</button>
+          <button @click="submitForm" type="submit" class="btn btn-primary">Edit Product</button>
         </div>
       </div>
     </div>
@@ -53,15 +49,34 @@
 import axios from "axios";
 
 export default {
-  name: "ModalForm",
+  name: "EditModalForm",
+  props: {
+    product_name: {
+      type: String
+    },
+    quantity: {
+      type: Number
+    },
+    price: {
+      type: Number
+    },
+    category: {
+      type: String
+    },
+    productImage: {
+      type: String
+    },
+    productKey: {
+      type: String
+    }
+  } ,
   data(){
     return {
-        name: '',
-        productCount: 1,
-        cost: 0.0,
-        productCategory: '',
-        image: null,
-        requestedCategory: ''
+        name: this.product_name,
+        productCount: this.quantity,
+        cost: this.price,
+        productCategory: this.category,
+        image: this.productImage
 
     }
   },
@@ -94,9 +109,9 @@ export default {
       form.append("category", this.productCategory)
       form.append("price", this.cost)
       form.append("product_image", this.imageFile)
-      form.append("requested_category", this.requestedCategory)
+      form.append("product_id", this.productKey)
       console.log(form)
-      axios.post('http://localhost:8000/manage_product', form, {
+      axios.put('http://localhost:8000/manage_product', form, {
         headers: {
           Authorization: `Bearer ${this.$store.state.user.access_token}`,
           'Content-Type': 'multipart/form-data'
@@ -106,6 +121,13 @@ export default {
         this.fetchProducts();
       }).catch(err => {
         console.log(err)
+        this.$store.dispatch("setUser", {
+          username: "",
+          user_id: "",
+          role: "",
+          access_token: "",
+          email: ""
+        })
         this.$router.push("/login")
       })
     },

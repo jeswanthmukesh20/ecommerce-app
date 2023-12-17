@@ -9,7 +9,7 @@
           <div class="card-body">
             <p class="lead">Thank you for shopping with us!</p>
             <p>Your order has been successfully processed.</p>
-            <p>An email confirmation has been sent to your email address.</p>
+            <p>Your Order id: {{getOrder}}.</p>
             <a href="/" class="btn btn-primary">Continue Shopping</a>
           </div>
         </div>
@@ -19,7 +19,12 @@
 </template>
 <script>
 export default {
-  name: "CheckoutView"
+  name: "CheckoutView",
+  computed: {
+    getOrder(){
+      return this.$store.state.orderId
+    }
+  }
 }
 </script>
 

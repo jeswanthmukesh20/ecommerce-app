@@ -1,31 +1,78 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask import jsonify
 from flask import request
 from flask_restful import Api
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import send_from_directory
-
+from functools import wraps
 from applications import db
 from applications.models import Users
 from applications.show_products_api import ShowProducts
 from applications.user_api import UserAPI
+from applications.admin_page_api import Admin, Category
 from applications import ManageProduct, DeleteProduct, BASE_DIR
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import JWTManager
 import time
 import uuid
+from flask_caching import Cache
+from datetime import timedelta, datetime
+from celery import Celery, Task
+from flask_mail import Mail, Message
+from celery.schedules import crontab
 
 app = Flask(__name__)
-print(BASE_DIR.absolute())
 app.config["JWT_SECRET_KEY"] = "super-secret"
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///main.db"
+app.config["CACHE_TYPE"] = "redis"
+app.config["CACHE_REDIS_HOST"] = "localhost"
+app.config["CACHE_REDIS_PORT"] = "6379"
+app.config["CACHE_REDIS_DB"] = "0"
+app.config["CACHE_REDIS_URL"] = "redis://localhost:6379/0"
+app.config["CACHE_DEFAULT_TIMEOUT"] = "500"
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'kiranakart.appdev2@gmail.com'
+app.config['MAIL_PASSWORD'] = 'zojy bcpe dvta aqxm'
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+app.config["MAIL_INTERVAL"] = 24
+mail = Mail(app)
+
+
+def make_celery(app):
+    app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
+    app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
+    celery = Celery(app.name, backend=app.config['CELERY_RESULT_BACKEND'], broker=app.config['CELERY_BROKER_URL'])
+    celery.conf.update(app.config)
+
+    class ContextTask(Task):
+        abstract = True
+
+        def __call__(self, *args, **kwargs):
+            with app.test_request_context() as g:
+                g.in_celery_task = True
+                res = self.run(*args, **kwargs)
+                return res
+
+    celery.Task = ContextTask
+    celery.config_from_object(__name__)
+    celery.conf.timezone = 'UTC'
+    return celery
+
+
+celery = make_celery(app)
+
 api = Api(app)
 db.init_app(app)
 cors = CORS(app)
 jwt = JWTManager(app)
+cache = Cache(app)
 with app.app_context():
     db.create_all()
+
+app.logger.info("starting new app")
 
 roles = {
     "manager": "store manager",
@@ -62,8 +109,8 @@ def login():
 
 
 @app.route('/images/<path>', methods=["GET"])
-def send_report(path):
-    print(path)
+# @cache.cached(timeout=50)
+def send_image(path):
     return send_from_directory('product_images', path)
 
 
@@ -97,11 +144,62 @@ def signup(user_type):
     return {"error": "Insufficient credentials"}, 400
 
 
+def cached_decoratory(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        cache_function = cache.cached(timeout=50)(func)
+        return cache_function(*args, **kwargs)
+
+    return wrapper
+
+
+ShowProducts.get = cached_decoratory(ShowProducts.get)
+
 api.add_resource(ShowProducts, "/shop")
 api.add_resource(ManageProduct, "/manage_product")
 api.add_resource(DeleteProduct, "/delete_product")
 api.add_resource(UserAPI, "/user_actions")
+api.add_resource(Admin, "/admin")
+api.add_resource(Category, "/admin/category")
+
+
+@celery.task
+def send_message():
+    users = Users.query.filter_by(role="user").all()
+    mail_users = []
+    mails = []
+    for user in users:
+        timestamp = datetime.fromtimestamp(user.lastseen)
+        current_datetime = datetime.now()
+        time_difference = current_datetime - timestamp
+        hours_difference = time_difference.seconds // 3600
+        if hours_difference > app.config["MAIL_INTERVAL"]:
+            mail_users.append((user.name, user.email))
+            mails.append(user.email)
+    for username, email in mail_users:
+        email_content = render_template(
+            template_name_or_list='Mail.html',
+            recipient=username,
+            sender=app.config["MAIL_USERNAME"],
+            website_name="KiranaKart"
+        )
+        msg = Message(
+            subject='We Miss You! Come Back and Explore More',
+            recipients=[email],
+            sender=app.config["MAIL_USERNAME"]
+        )
+        msg.html = email_content
+        mail.send(msg)
+
+
+@celery.on_after_configure.connect
+def setup_periodic_tasks(sender, **kwargs):
+    print(sender)
+    sender.add_periodic_task(
+        crontab(hour=17, minute=30),
+        send_message.s(),
+        name='Send Mail Everyday')
+
 
 if __name__ == "__main__":
-    # db.create_all()
     app.run(debug=True, host="0.0.0.0", port=8000)

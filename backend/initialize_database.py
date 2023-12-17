@@ -3,6 +3,9 @@ import random
 import string
 import json
 import argparse
+from pathlib import Path
+
+BASE_DIR = Path()
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -57,7 +60,8 @@ if store_managers:
                 "Authorization": f"Bearer {user['access_token']}"
             }
             data["images"] = ["no-picture.jpg" for i in range(10)]
-            resp = requests.post(url=add_products, json=data, headers=headers).json()
+            # data["main_image"] = open((BASE_DIR / 'product_images' / data["main_image"]).absolute().as_posix(), 'rb')
+            resp = requests.post(url=add_products, data=data, headers=headers).json()
             print(resp)
 
     with open("store_managers.json", "w") as f:

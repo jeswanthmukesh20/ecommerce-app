@@ -33,21 +33,27 @@
     </div>
 <ModalForm/>
 
+
   </div>
+  <AdminHomeView v-if="getRole === 'admin'"/>
 </template>
 <script>
 import ProductCard from "@/components/ProductCard.vue";
 import ManagerProductCard from "@/components/ManagerProductCard.vue";
 import axios from "axios";
 import ModalForm from "@/components/ModalForm.vue";
+import AdminHomeView from "@/pages/AdminHomeView.vue";
+// import EditModalForm from "@/components/EditModalForm.vue";
 
 
 export default {
   name: "HomeView",
   components: {
+    // EditModalForm,
     ModalForm,
     ProductCard,
-    ManagerProductCard
+    ManagerProductCard,
+    AdminHomeView
   },
   data() {
     return {
@@ -68,24 +74,27 @@ export default {
   },
   methods: {
     fetchProducts(){
-      axios.get(`http://localhost:8000${this.paths[this.getRole]}`,{
-        headers: {
-          Authorization: `Bearer ${this.$store.state.user.access_token}`
-        }
-      }).then(res => {
-        console.log(res)
-        this.$store.dispatch("SET_Products", res.data);
-      }).catch(err => {
-        console.log(err)
-        this.$store.dispatch("setUser", {
-          username: "",
-          user_id: "",
-          role: "",
-          access_token: "",
-          email: ""
+      if(this.getRole !== "admin"){
+        axios.get(`http://localhost:8000${this.paths[this.getRole]}`,{
+          headers: {
+            Authorization: `Bearer ${this.$store.state.user.access_token}`
+          }
+        }).then(res => {
+          console.log(res)
+          this.$store.dispatch("SET_Products", res.data);
+        }).catch(err => {
+          console.log(err)
+          if(this.$store.state.user.access_token){
+          this.$store.dispatch("setUser", {
+            username: "",
+            user_id: "",
+            role: "",
+            access_token: "",
+            email: ""
+          })
+          this.$router.push("/login")}
         })
-        this.$router.push("/login")
-      })
+      }
     },
   },
   computed: {

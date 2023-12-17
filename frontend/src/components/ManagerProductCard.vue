@@ -8,7 +8,7 @@
         <p class="quantity" v-if="getQuantity">Only {{ quantity}} stocks left!</p>
         <p class="quantity" v-if="outOfStock">out of stock!</p>
         <p @click="alert(`Clicked ${title}`)" class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-        <a class="btn btn-success">
+        <a data-toggle="modal" :data-target="`#${product_id}`" class="nav-link btn btn-success text-light" href="#">
           Edit
         </a>
         <a @click="deleteProduct" class="btn btn-success btn-danger">
@@ -16,14 +16,24 @@
         </a>
       </div>
     </div>
+    <EditModalForm
+        :product_name="title"
+        :quantity="quantity"
+        :price="price"
+        :product-key="product_id"
+        :product-image="imageURL"
+        :category="category"
+    />
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import EditModalForm from "@/components/EditModalForm.vue";
 
 export default {
   name: "ProductCard",
+  components: {EditModalForm},
   props: {
     imageURL: {
       type: String,

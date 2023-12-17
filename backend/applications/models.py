@@ -13,7 +13,6 @@ class Users(db.Model):
     active = db.Column(db.Boolean())
     role = db.Column(db.String())
     user_orders = db.relationship('Orders', backref='users', cascade='all, delete')
-    user_address = db.relationship("Address", backref="users", cascade="all, delete")
 
     def is_admin(self):
         return self.role == "admin"
@@ -40,18 +39,14 @@ class Orders(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     order_id = db.Column(db.String())
     user_id = db.Column(db.String(), db.ForeignKey(Users.id, ondelete='CASCADE'))
-    product_name = db.Column(db.String())
-    quantity = db.Column(db.Integer)
+    products = db.Column(db.PickleType())
+    total_cost = db.Column(db.Integer)
     time = db.Column(db.DateTime, default=datetime.utcnow)
 
 
-class Address(db.Model):
-    __tablename__ = "Address"
+class RequestedCategory(db.Model):
+    __tablename__ = "RequestedCategory"
     id = db.Column(db.Integer, primary_key=True)
-    pincode = db.Column(db.Integer, nullable=False)
-    address = db.Column(db.String(200), nullable=False)
-    state = db.Column(db.String(100), nullable=False)
-    city = db.Column(db.String(100), nullable=False)
-    address_type = db.Column(db.String(20), nullable=True)
-    user_id = db.Column(db.Integer, db.ForeignKey(Users.id, ondelete="CASCADE"))
-
+    category_name = db.Column(db.String(30))
+    product_user = db.Column(db.Integer, db.ForeignKey(Users.id, ondelete='CASCADE'))
+    approved = db.Column(db.Boolean, default=False)

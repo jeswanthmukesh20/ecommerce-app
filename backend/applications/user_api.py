@@ -3,8 +3,9 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_jwt_extended.utils import decode_token
 from werkzeug.security import generate_password_hash
 from flask import request
-from .models import Users, Product
+from .models import Users, Product, Orders
 from .db import db
+import uuid
 
 
 class UserAPI(Resource):
@@ -33,12 +34,22 @@ class UserAPI(Resource):
             if user.role == "user":
                 data = request.get_json()
                 orders = data.get("orders")
+                total_price = 0
+                order_id = str(uuid.uuid4())
                 for order in orders:
                     product = Product.query.filter_by(public_id=order["product_id"]).first()
                     product.quantity = product.quantity - int(order["quantity"])
+                    total_price += int(order["quantity"]) * order["price"]
                     db.session.commit()
-
-                return {"msg": "success"}, 200
+                new_order = Orders(
+                    order_id=order_id,
+                    products=orders,
+                    total_cost=total_price,
+                    user_id=user.id
+                )
+                db.session.add(new_order)
+                db.session.commit()
+                return {"msg": "success", "order_id": order_id}, 200
             else:
                 return {"err": "you are not authorized"}
         return {"err": "you are not authenticated"}, 401
@@ -78,4 +89,3 @@ class UserAPI(Resource):
     #         user = Users.query.filter_by(public_id=current_user).first()
     #         if data[""]
     #
-

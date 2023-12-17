@@ -75,6 +75,7 @@ export default {
         orders: this.$store.state.cart
       }, config).then(resp => {
         console.log(resp)
+        this.$store.dispatch("setOrder", resp.data.order_id)
       }).catch(err => {
         console.log(err.response.status)
       })

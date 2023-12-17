@@ -2,7 +2,7 @@ from flask_restful import Resource
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_jwt_extended.utils import decode_token
 from flask import request
-from .models import Users, Product
+from .models import Users, Product, RequestedCategory
 import uuid
 from werkzeug.utils import secure_filename
 from .db import db
@@ -43,11 +43,7 @@ class ManageProduct(Resource):
     def post(self):
         current_user = get_jwt_identity()
         token = request.headers.get('Authorization').split()[1]
-        print(token, "token")
         data = request.form
-        print(data)
-        print(request.files)
-        # data = request.get_json()
         decoded_token = decode_token(token)
         if decoded_token:
             user = Users.query.filter_by(public_id=current_user).first()
@@ -56,23 +52,40 @@ class ManageProduct(Resource):
                 pictures = []
                 for picture in ["no-picture.jpg" for _ in range(3)]:
                     pictures.append(picture)
-                # print(data)
+
                 image = request.files.get("product_image", None)
-                # print(image, 'image')
-                destination = (BASE_DIR / 'product_images' / image.filename).as_posix()
-                print(destination, "destination")
-                image.save(destination)
-                product = Product(
-                    product_name=data.get("product_name"),
-                    quantity=data.get("quantity"),
-                    price=data.get("price"),
-                    category=data.get("category"),
-                    main_image=image.filename,
-                    images=pictures,
-                    public_id=public_id,
-                    product_user=user.id
-                )
-                db.session.add(product)
+                if image:
+                    print(image)
+                    destination = (BASE_DIR / 'product_images' / image.filename).as_posix()
+                    image.save(destination)
+
+                product_name = data.get("product_name", None)
+                image_name = data.get("main_image", None)
+                quantity = data.get("quantity", None)
+                price = data.get("price", None)
+                category = data.get("category", None)
+
+                if  product_name and quantity and price and category:
+
+                    product = Product(
+                        product_name=product_name,
+                        quantity=quantity,
+                        price=price,
+                        category=category,
+                        main_image=image.filename if not image_name else image_name,
+                        images=pictures,
+                        public_id=public_id,
+                        product_user=user.id
+                    )
+                    db.session.add(product)
+
+                requested_category = request.form.get("requested_category", None)
+                if requested_category:
+                    category = RequestedCategory(
+                        category_name=requested_category,
+                        product_user=user.id
+                    )
+                    db.session.add(category)
                 db.session.commit()
                 return {"msg": "Product added successfully"}, 200
         return {"error": "you are not authenticated"}, 400
@@ -81,7 +94,8 @@ class ManageProduct(Resource):
     def put(self):
         current_user = get_jwt_identity()
         token = request.headers.get("Authorization").split()[1]
-        data = request.get_json()
+        data = request.form
+        print(data)
         decoded_token = decode_token(token)
         if decoded_token:
             product_id = data.get("product_id")
@@ -93,6 +107,7 @@ class ManageProduct(Resource):
                     quantity = data.get("quantity", None)
                     price = data.get("price", None)
                     category = data.get("category", None)
+                    image_file = request.files.get("product_image", None)
                     if product_name:
                         product.product_name = product_name
                     if quantity:
@@ -101,6 +116,12 @@ class ManageProduct(Resource):
                         product.price = price
                     if category:
                         product.category = category
+                    if image_file:
+                        destination = (BASE_DIR / 'product_images' / image_file.filename).as_posix()
+                        old_file = BASE_DIR / 'product_images' / product.main_image
+                        old_file.unlink(missing_ok=True)
+                        product.main_image = image_file.filename
+                        image_file.save(destination)
                     db.session.commit()
                     return {"msg": "updated"}, 202
                 else:

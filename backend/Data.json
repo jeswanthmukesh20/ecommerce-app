@@ -1,0 +1,18 @@
+[
+  {
+    'product_id': '70ee69e2-9784-4698-bb96-48aca4ada697',
+    'price': 55,
+    'imageURL': 'http://localhost:8000/images/bread.webp',
+    'product_name': 'Britannia 100% Whole Wheat Sandwich Bread',
+    'category': 'Grocery',
+    'quantity': 12
+  },
+  {
+    'product_id': '0edfb751-c454-4691-a1f0-042f095353fa',
+    'price': 120,
+    'imageURL': 'http://localhost:8000/images/amul.webp',
+    'product_name': 'Amul Butter 200g',
+    'category': 'Grocery',
+    'quantity': 2
+  }
+]

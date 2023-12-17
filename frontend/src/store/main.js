@@ -14,7 +14,8 @@ export default new createStore({
                 access_token: "",
                 email: ""
             },
-            products: []
+            products: [],
+            orderId: ""
         }
     },
     getters: {
@@ -51,6 +52,9 @@ export default new createStore({
         },
         setProducts(state, products){
             state.products = products;
+        },
+        setOrder(state, orderId){
+            state.orderId = orderId;
         }
     },
     actions: {
@@ -62,6 +66,9 @@ export default new createStore({
         },
         SET_Products({ commit }, products){
             commit("setProducts", products)
+        },
+        setOrder({commit}, orderId){
+            commit("setOrder", orderId);
         }
     },
     modules: {

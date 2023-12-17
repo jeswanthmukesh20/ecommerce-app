@@ -89,7 +89,8 @@ export default {
       return this.$store.state.cartItem > 0
     },
     userAnonymous(){
-      return this.$store.state.user === "user" || this.$store.state.user === "user"
+
+      return this.$store.state.user.role === "user" || this.$store.state.user.role === ""
     }
   }
 

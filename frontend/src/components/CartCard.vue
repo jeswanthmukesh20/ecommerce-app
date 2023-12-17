@@ -2,7 +2,7 @@
   <div class="card mb-4">
     <div class="row no-gutters">
       <div class="col-md-4">
-        <img width="286" height="191" :src="require(`../assets/img/${imageURL}`)" class="card-img item-img" alt="Item 1">
+        <img width="286" height="191" :src="imageURL" class="card-img item-img" alt="Item 1">
       </div>
       <div class="col-md-8">
         <div class="card-body">
